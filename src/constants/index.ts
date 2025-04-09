@@ -1,0 +1,8 @@
+export const ACTION_LOGIN = "ACTION_LOGIN";
+export const ACTION_LOGOUT = "ACTION_LOGOUT";
+
+export const EDITING_POST = "EDITING_POST";
+export const EDITING_COMMENT = "EDITING_COMMENT";
+export const NOT_EDITING = "NOT_EDITING";
+
+export const ACTION_LOADING = "ACTION_LOADING";
