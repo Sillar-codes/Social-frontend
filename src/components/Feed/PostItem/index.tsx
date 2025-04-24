@@ -21,7 +21,6 @@ export default function PostItem({ data, handleLike }: Props) {
   const context = useContext(GlobalContext);
   if (!context) return;
   const { currentUser } = context.globalState;
-  if (!currentUser) return;
 
   const handleComment = () => {
     setIsEditing(isEditing === EDITING_COMMENT ? NOT_EDITING : EDITING_COMMENT);
@@ -63,7 +62,7 @@ export default function PostItem({ data, handleLike }: Props) {
           <AppIcon name="comment" size="20px" />
           <Typography>{comments.length}</Typography>
         </Stack>
-        {
+        {currentUser != null ? (
           <>
             {!data.likes.includes(currentUser._id) ? (
               <Button
@@ -92,7 +91,9 @@ export default function PostItem({ data, handleLike }: Props) {
               {isEditing === EDITING_COMMENT ? "Cancel" : "New Comment"}
             </Button>
           </>
-        }
+        ) : (
+          <></>
+        )}
       </Stack>
 
       {isEditing === EDITING_COMMENT ? (

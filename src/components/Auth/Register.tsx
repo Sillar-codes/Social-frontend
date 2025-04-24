@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 
 import { AuthFormData, User } from "@/types/auth";
-import { registerUser, updateUser } from "@/services";
+import { currentUser, registerUser, updateUser } from "@/services";
 import GlobalContext from "@/context/GlobalContext";
 import { ACTION_LOADING, ACTION_LOGIN } from "@/constants";
 import { ROUTES } from "@/configs/routes";
@@ -18,6 +18,11 @@ interface Props {
 }
 
 export default function Register({ isUpdating }: Props) {
+  const context = useContext(GlobalContext);
+  if (!context) return;
+
+  const { currentUser } = context.globalState;
+
   const schema = yup.object().shape({
     name: yup.string().required("name is required"),
     email: yup
@@ -40,8 +45,8 @@ export default function Register({ isUpdating }: Props) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      email: "",
+      name: currentUser?.name,
+      email: currentUser?.email,
       prevPassword: "",
       password: "",
       confirmPassword: "",
@@ -50,7 +55,6 @@ export default function Register({ isUpdating }: Props) {
     resolver: yupResolver(schema),
   });
   const navigate = useNavigate();
-  const context = useContext(GlobalContext);
 
   // useEffect(() => {
   //   if (!context) return;
@@ -59,6 +63,11 @@ export default function Register({ isUpdating }: Props) {
   if (context && context.globalState.currentUser && !isUpdating) {
     navigate(ROUTES.PROFILE);
   }
+
+  const handleSumbitClick = async (formData: AuthFormData) => {
+    if (isUpdating) await handleUpdateSubmit(formData);
+    else await handleRegisterSubmit(formData);
+  };
 
   const handleRegisterSubmit = async (formData: AuthFormData) => {
     context?.globalDispatch({ type: ACTION_LOADING, payload: true });
@@ -73,6 +82,7 @@ export default function Register({ isUpdating }: Props) {
   };
 
   const handleUpdateSubmit = async (formData: AuthFormData) => {
+    context?.globalDispatch({ type: ACTION_LOADING, payload: true });
     try {
       const data = await updateUser(formData);
       context?.globalDispatch({
@@ -83,7 +93,10 @@ export default function Register({ isUpdating }: Props) {
     } catch (err) {
       handleError(err);
     }
+    context?.globalDispatch({ type: ACTION_LOADING, payload: false });
   };
+
+  console.log(errors);
 
   return (
     <Stack direction="row" justifyContent="center">
@@ -97,9 +110,7 @@ export default function Register({ isUpdating }: Props) {
           component="form"
           direction="column"
           spacing={2}
-          onSubmit={handleSubmit(
-            isUpdating ? handleUpdateSubmit : handleRegisterSubmit
-          )}
+          onSubmit={handleSubmit(handleSumbitClick)}
         >
           <Typography variant="h2" textAlign="center">
             {isUpdating ? "Update User" : "Sign Up"}
@@ -133,24 +144,20 @@ export default function Register({ isUpdating }: Props) {
               )}
             </Stack>
           )}
-          {isUpdating ? (
-            <Stack direction="column" spacing={1}>
-              <TextField
-                aria-label="prev-password"
-                label="Previous Password"
-                variant="filled"
-                type="password"
-                {...register("prevPassword")}
-              />
-              {errors.prevPassword && (
-                <Typography color="error">
-                  {errors.prevPassword.message}
-                </Typography>
-              )}
-            </Stack>
-          ) : (
-            <></>
-          )}
+          <Stack direction="column" spacing={1}>
+            <TextField
+              aria-label="prev-password"
+              label="Previous Password"
+              variant="filled"
+              type="password"
+              {...register("prevPassword")}
+            />
+            {errors.prevPassword && (
+              <Typography color="error">
+                {errors.prevPassword.message}
+              </Typography>
+            )}
+          </Stack>
           <Stack direction="column" spacing={1}>
             <TextField
               aria-label="password"

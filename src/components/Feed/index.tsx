@@ -31,7 +31,7 @@ export default function Feed() {
   }, []);
 
   if (!context) return <></>;
-  const { globalDispatch } = context;
+  const { globalState, globalDispatch } = context;
 
   const handleLike = async (like: boolean, postId: string) => {
     globalDispatch({ type: ACTION_LOADING, payload: true });
@@ -51,11 +51,15 @@ export default function Feed() {
 
   return (
     <Box>
-      <Button variant="contained" color="success">
-        <Box component={CustomLink} to="/create">
-          Create Post
-        </Box>
-      </Button>
+      {globalState.currentUser ? (
+        <Button variant="contained" color="success">
+          <Box component={CustomLink} to="/create">
+            Create Post
+          </Box>
+        </Button>
+      ) : (
+        <></>
+      )}
       {posts.map((post, index) => (
         <PostItem key={`post${index}`} data={post} handleLike={handleLike} />
       ))}

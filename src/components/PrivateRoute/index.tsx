@@ -10,7 +10,6 @@ interface Props {
 
 export default function PrivateRoute({ element }: Props) {
   const context = useContext(GlobalContext);
-  console.log(context?.globalState);
 
   return (
     <>

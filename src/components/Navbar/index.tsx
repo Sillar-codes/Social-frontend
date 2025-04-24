@@ -49,14 +49,8 @@ export default function Navbar() {
                 spacing={2}
                 sx={{ display: { xs: "none", md: "flex" } }}
               >
-                {globalState.currentUser ? (
-                  <>
-                    <CustomLink to={ROUTES.EXPLORE}>EXPLORE</CustomLink>
-                    <CustomLink to={ROUTES.FEED}>FEED</CustomLink>
-                  </>
-                ) : (
-                  <></>
-                )}
+                <CustomLink to={ROUTES.EXPLORE}>EXPLORE</CustomLink>
+                <CustomLink to={ROUTES.FEED}>FEED</CustomLink>
               </Stack>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
