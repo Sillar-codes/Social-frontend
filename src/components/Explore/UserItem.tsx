@@ -11,6 +11,8 @@ import { orange } from "@mui/material/colors";
 
 import { User } from "@/types/auth";
 import AppIcon from "@/components/AppIcon";
+import { useContext } from "react";
+import GlobalContext from "@/context/GlobalContext";
 
 interface Props {
   user: User;
@@ -18,6 +20,11 @@ interface Props {
 }
 
 export default function UserItem({ user, handleFollow }: Props) {
+  const context = useContext(GlobalContext);
+  if (context == null) return;
+
+  const { currentUser } = context.globalState;
+
   return (
     <Grid size={{ xs: 12, md: 4 }}>
       <Card>
@@ -29,17 +36,21 @@ export default function UserItem({ user, handleFollow }: Props) {
           }
           title={<Typography variant="h6">{user.name}</Typography>}
           action={
-            user.isFollowing ? (
-              <IconButton
-                onClick={() => handleFollow(false, user._id)}
-                color="error"
-              >
-                <AppIcon name="thumbDown" />
-              </IconButton>
+            currentUser != null ? (
+              user.isFollowing ? (
+                <IconButton
+                  onClick={() => handleFollow(false, user._id)}
+                  color="error"
+                >
+                  <AppIcon name="thumbDown" />
+                </IconButton>
+              ) : (
+                <IconButton onClick={() => handleFollow(true, user._id)}>
+                  <AppIcon name="thumbUp" />
+                </IconButton>
+              )
             ) : (
-              <IconButton onClick={() => handleFollow(true, user._id)}>
-                <AppIcon name="thumbUp" />
-              </IconButton>
+              <></>
             )
           }
         />

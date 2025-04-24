@@ -23,7 +23,7 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.EXPLORE,
-        element: <PrivateRoute element={<Explore />} />,
+        element: <Explore />,
       },
       {
         path: ROUTES.REGISTER,
@@ -43,11 +43,11 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.FEED,
-        element: <PrivateRoute element={<Feed />} />,
+        element: <Feed />,
       },
       {
         path: ROUTES.CREATE_POST,
-        element: <PrivateRoute element={<CreatePost />} />,
+        element: <CreatePost />,
       },
       {
         path: ROUTES.NOT_FOUND,
